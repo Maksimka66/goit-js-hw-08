@@ -68,13 +68,14 @@ const images = [
   },
 ];
 
+const body = document.querySelector('body');
 const listOfImg = document.querySelector('.gallery');
 
 const createLiForUl = array => {
-  let result;
+  let result = [];
   for (const elem of array) {
-    let childrenForUl = `
-    <li class="gallery-item">
+    result.push(
+      `<li class="gallery-item">
       <a class="gallery-link" href="${elem.original}">
         <img 
           class="gallery-image"
@@ -83,11 +84,42 @@ const createLiForUl = array => {
           alt="${elem.description}"
         /> 
       </a>
-    </li>`;
-
-    listOfImg.appendChild(childrenForUl) = result;
+    </li>`
+    );
   }
-  return result;
+  return result.join('');
 };
 
-createLiForUl(images);
+listOfImg.innerHTML = createLiForUl(images);
+
+listOfImg.addEventListener('click', event => {
+  event.preventDefault();
+  body.style.backgroundColor = 'rgba(46, 47, 66, 0.80)';
+
+  let dataAttributes = event.target.dataset.source;
+  if (!dataAttributes) {
+    body.style.backgroundColor = '#fff';
+    return;
+  }
+  const instance = basicLightbox.create(
+    `
+    <img src="${dataAttributes}" width="1112" height="640">
+`,
+    {
+      onShow: () => {
+        document.addEventListener('keydown', pressEsc);
+      },
+      onClose: () => {
+        document.removeEventListener('keydown', pressEsc);
+        body.style.backgroundColor = '#fff';
+      },
+    }
+  );
+  instance.show();
+
+  function pressEsc(event) {
+    if (event.key === 'Escape') {
+      instance.close();
+    }
+  }
+});
