@@ -94,24 +94,21 @@ listOfImg.innerHTML = createLiForUl(images);
 
 listOfImg.addEventListener('click', event => {
   event.preventDefault();
-  body.style.backgroundColor = 'rgba(46, 47, 66, 0.80)';
-
   let dataAttributes = event.target.dataset.source;
   if (!dataAttributes) {
-    body.style.backgroundColor = '#fff';
     return;
   }
+
   const instance = basicLightbox.create(
-    `
-    <img src="${dataAttributes}" width="1112" height="640">
-`,
+    `<img src="${dataAttributes}" width="1112" height="640">`,
     {
       onShow: () => {
+        body.style.backgroundColor = 'rgba(46, 47, 66, 0.8)';
         document.addEventListener('keydown', pressEsc);
       },
       onClose: () => {
-        document.removeEventListener('keydown', pressEsc);
         body.style.backgroundColor = '#fff';
+        document.removeEventListener('keydown', pressEsc);
       },
     }
   );
